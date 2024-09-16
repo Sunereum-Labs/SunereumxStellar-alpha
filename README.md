@@ -1,4 +1,4 @@
-# SunereumxSoroban - explanatory architecture
+# Sunereum x Soroban - explanatory architecture
 
 # Sunereum Labs Technical Architecture
 
