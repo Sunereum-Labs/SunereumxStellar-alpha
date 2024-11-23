@@ -58,7 +58,7 @@ Key Features:
 
 ```
 ┌─────────────────┐     ┌───────────────┐     ┌──────────────┐
-│  Virya Platform │ --> │ Soroban Oracle│ --> │ BitVM Bridge │
+│  Sunereum Platform │ --> │ Soroban Oracle│ --> │ BitVM Bridge │
 │  (IoT Layer)    │     │ (Stellar)     │     │ (Bitcoin)    │
 └─────────────────┘     └───────────────┘     └──────────────┘
          │                      │                     │
@@ -254,3 +254,12 @@ It is important to emphasize that our focus is less about insurance and more abo
 ## Accessible Data from Soroban Oracles
 
 We envision that both inverter (production side) and meter (consumption side) data will be accessible from these Soroban Oracles. This comprehensive data access will enable developers to create more accurate and reliable energy solutions, enhancing the overall efficiency and effectiveness of energy management systems.
+
+## How Sunereum Uses Hyperledger Fabric and Leverages Soroban and Stellar
+
+Sunereum uses Hyperledger Fabric as its internal blockchain to track and represent every state change of an inverter on a solar site. This ensures that all data related to the performance and status of solar inverters is securely recorded and immutable. By leveraging Soroban and Stellar, we can create a more open ecosystem where developers and services can build solutions around energy. This integration allows for:
+
+- **Decentralized Verification**: Multiple nodes in the network verify each transaction, enhancing the security and trustworthiness of the data.
+- **Real-time Monitoring**: The blockchain allows for real-time monitoring of inverter performance, enabling proactive maintenance and rapid response to issues.
+- **Cross-Border Transactions**: The integration with Stellar's blockchain facilitates cross-border transactions, enabling seamless payment and settlement for energy services.
+- **Decentralized Applications**: Developers can build decentralized applications (dApps) on top of the oracle, offering a wide range of services such as energy trading, microgrid management, and renewable energy financing.

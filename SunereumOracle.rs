@@ -85,10 +85,10 @@ const DOWNTIME_THRESHOLD: u64 = 14400; // 4 hours in seconds
 const AUTHORIZED_PROVIDERS: Symbol = symbol_short!("AUTH_PROVIDERS");
 const PERFORMANCE_THRESHOLD: u32 = 70; // 70% of rated power
 
-pub struct ViryaIntegrationContract;
+pub struct SunereumIntegrationContract;
 
 #[contractimpl]
-impl ViryaIntegrationContract {
+impl SunereumIntegrationContract {
     pub fn initialize(env: Env) {
         env.storage().instance().set(&DEVICES, &Map::new(&env));
         env.storage().instance().set(&MAINTENANCE, &Vec::new(&env));
@@ -315,8 +315,8 @@ mod test {
     #[test]
     fn test_inverter_registration_and_data() {
         let env = Env::default();
-        let contract_id = env.register_contract(None, ViryaIntegrationContract);
-        let client = ViryaIntegrationContractClient::new(&env, &contract_id);
+        let contract_id = env.register_contract(None, SunereumIntegrationContract);
+        let client = SunereumIntegrationContractClient::new(&env, &contract_id);
 
         client.initialize();
 
