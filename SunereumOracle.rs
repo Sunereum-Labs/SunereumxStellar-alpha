@@ -24,7 +24,7 @@ pub struct InverterData {
 
 #[derive(Clone)]
 #[contracttype]
-pub struct IoTDevice {
+pub struct Inverter {
     device_id: String,
     policy_id: String,
     last_ping: u64,
@@ -37,6 +37,34 @@ pub struct IoTDevice {
     rated_power: u32,         // W
     last_reading: InverterData,
     hourly_readings: Vec<InverterData>,
+}
+
+#[derive(Clone)]
+#[contracttype]
+pub struct EnergyMeter {
+    meter_id: String,
+    last_ping: u64,
+    operational_status: bool,
+    online_status: bool,
+    manufacturer: String,
+    model: String,
+    last_reading: MeterData,
+    hourly_readings: Vec<MeterData>,
+}
+
+#[derive(Clone)]
+#[contracttype]
+pub struct MeterData {
+    timestamp: u64,
+    energy_consumed: u64,     // Wh for the hour
+    peak_power: u32,          // W
+    voltage: u32,             // V
+    current: u32,             // mA
+    frequency: u32,           // mHz
+    power_factor: u32,        // percentage * 100
+    daily_consumption: u64,   // Wh
+    total_consumption: u64,   // kWh
+    operating_hours: u32,     // hours
 }
 
 #[derive(Clone)]
@@ -75,7 +103,7 @@ impl ViryaIntegrationContract {
         model: String,
         rated_power: u32,
     ) -> Result<(), String> {
-        let mut devices: Map<String, IoTDevice> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
+        let mut devices: Map<String, Inverter> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
         
         if devices.contains_key(&device_id) {
             return Err(String::from_str(&env, "Device already registered"));
@@ -97,7 +125,7 @@ impl ViryaIntegrationContract {
             operating_hours: 0,
         };
 
-        let device = IoTDevice {
+        let device = Inverter {
             device_id: device_id.clone(),
             policy_id,
             last_ping: env.ledger().timestamp(),
@@ -140,7 +168,7 @@ impl ViryaIntegrationContract {
             return Err(String::from_str(&env, "Unauthorized provider"));
         }
 
-        let mut devices: Map<String, IoTDevice> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
+        let mut devices: Map<String, Inverter> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
         
         if let Some(mut device) = devices.get(device_id.clone()) {
             let new_reading = InverterData {
@@ -199,7 +227,7 @@ impl ViryaIntegrationContract {
         env: Env,
         device_id: String,
     ) -> Result<(), String> {
-        let mut devices: Map<String, IoTDevice> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
+        let mut devices: Map<String, Inverter> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
         
         if let Some(mut device) = devices.get(device_id.clone()) {
             let current_time = env.ledger().timestamp();
@@ -220,7 +248,7 @@ impl ViryaIntegrationContract {
         env: Env,
         device_id: String,
     ) -> Result<Vec<InverterData>, String> {
-        let devices: Map<String, IoTDevice> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
+        let devices: Map<String, Inverter> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
         
         if let Some(device) = devices.get(device_id) {
             Ok(device.hourly_readings)
@@ -239,7 +267,7 @@ impl ViryaIntegrationContract {
         issues_found: Vec<String>,
         parts_replaced: Vec<String>,
     ) -> Result<(), String> {
-        let devices: Map<String, IoTDevice> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
+        let devices: Map<String, Inverter> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
         
         if !devices.contains_key(&device_id) {
             return Err(String::from_str(&env, "Device not found"));
@@ -261,8 +289,8 @@ impl ViryaIntegrationContract {
         Ok(())
     }
 
-    pub fn get_device_status(env: Env, device_id: String) -> Result<IoTDevice, String> {
-        let devices: Map<String, IoTDevice> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
+    pub fn get_device_status(env: Env, device_id: String) -> Result<Inverter, String> {
+        let devices: Map<String, Inverter> = env.storage().instance().get(&DEVICES).unwrap_or(Map::new(&env));
         
         if let Some(device) = devices.get(device_id) {
             Ok(device)
